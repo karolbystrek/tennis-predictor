@@ -1,0 +1,37 @@
+# version: '3.8'
+
+services:
+  db:
+    image: mysql:latest
+    container_name: mysql-tennis-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tennis_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - /Users/karol/Programming/Databases/Tennis.sql:/docker-entrypoint-initdb.d
+      - mysql_data:/var/lib/mysql
+    networks:
+      - tennis-predictor-network
+
+  api:
+    build: .
+    container_name: tennis-predictor
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "5001:5000"
+    depends_on:
+      - db
+    networks:
+      - tennis-predictor-network
+
+volumes:
+  mysql_data:
+
+networks:
+  tennis-predictor-network:
+    driver: bridge
