@@ -2,7 +2,9 @@
 
 ## Overview
 
-This project provides a RESTful API service for predicting the outcome of professional tennis matches. It utilizes a machine learning model (XGBoost) trained on historical match and player data to estimate the win probability for each player in a given match scenario.
+This project provides a RESTful API service for predicting the outcome of professional tennis matches. It utilizes a
+machine learning model (XGBoost) trained on historical match and player data to estimate the win probability for each
+player in a given match scenario.
 
 ## Features
 
@@ -55,7 +57,9 @@ This project provides a RESTful API service for predicting the outcome of profes
 4. **Database Setup:**
     * Ensure your MySQL server is running.
     * Create a database (e.g., `tennis`).
-    * Create the necessary tables (e.g., a `players` table) and populate them with relevant player data. The required player data includes `player_id`, `ht`, `age`, `rank`, `rank_points`, `elo`, `surface_elo`, `hand`, `first_name`, `last_name`. *Note: Database schema and data loading scripts are not included in this repository.*
+    * Create the necessary tables (e.g., a `players` table) and populate them with relevant player data. The required
+      player data includes `player_id`, `ht`, `age`, `rank`, `rank_points`, `elo`, `surface_elo`, `hand`, `first_name`,
+      `last_name`. *Note: Database schema and data loading scripts are not included in this repository.*
 
 5. **Environment Variables:**
     * Create a `.env` file in the project root directory by copying the example or creating a new one.
@@ -88,11 +92,14 @@ This project provides a RESTful API service for predicting the outcome of profes
     ```
 
 6. **Machine Learning Model:**
-    * Ensure the pre-trained XGBoost model file (`xgboost_tennis_model.ubj`) is placed in the location specified by the `MODEL_PATH` environment variable (default: `data/models/`). *Note: Model training scripts are not included in this repository.*
+    * Ensure the pre-trained XGBoost model file (`xgboost_tennis_model.ubj`) is placed in the location specified by the
+      `MODEL_PATH` environment variable (default: `data/models/`). *Note: Model training scripts are not included in
+      this repository.*
 
 ## Running the Application
 
-Use Gunicorn (a production-grade WSGI server) to run the application. The application configuration (`dev` or `prod`) is determined by the `APP_ENV` variable in your `.env` file or system environment.
+Use Gunicorn (a production-grade WSGI server) to run the application. The application configuration (`dev` or `prod`) is
+determined by the `APP_ENV` variable in your `.env` file or system environment.
 
 ```bash
 # Example: Run listening on localhost port 5000
@@ -110,16 +117,16 @@ The server will start, loading the configuration specified by `APP_ENV`.
 * **Authentication:** Requires `X-API-KEY` header matching the `PREDICTION_API_KEY` environment variable.
 * **Request Body:** JSON object containing match details.
 
-    **Example Request:**
+  **Example Request:**
 
     ```json
     {
-        "player1_id": 104745, // Example ID for Player 1
-        "player2_id": 104925, // Example ID for Player 2
+        "player1Id": 104745,  // Example ID for Player 1
+        "player2Id": 104925,  // Example ID for Player 2
         "surface": "Hard",    // "Hard", "Clay", "Grass", "Carpet"
-        "tourney_level": "M", // "A", "M", "G", "D", "F", "O"
+        "tourneyLevel": "M",  // "A", "M", "G", "D", "F", "O"
         "round": "F",         // "F", "SF", "QF", "R16", "R32", "R64", "R128", "RR", "BR", "ER"
-        "best_of": 5          // 3 or 5
+        "bestOf": 5           // 3 or 5
     }
     ```
 
@@ -138,12 +145,12 @@ The server will start, loading the configuration specified by `APP_ENV`.
     ```
 
 * **Error Responses:**
-  * `400 Bad Request`: Invalid or missing data in the request body.
-  * `403 Forbidden`: Missing or invalid `X-API-KEY` header.
-  * `404 Not Found`: Player data not found in the database for one or both IDs.
-  * `415 Unsupported Media Type`: Request body is not JSON.
-  * `500 Internal Server Error`: Unexpected server error during processing.
-  * `503 Service Unavailable`: Database connection error or model file not found/loadable.
+    * `400 Bad Request`: Invalid or missing data in the request body.
+    * `403 Forbidden`: Missing or invalid `X-API-KEY` header.
+    * `404 Not Found`: Player data not found in the database for one or both IDs.
+    * `415 Unsupported Media Type`: Request body is not JSON.
+    * `500 Internal Server Error`: Unexpected server error during processing.
+    * `503 Service Unavailable`: Database connection error or model file not found/loadable.
 
 ## Configuration
 
@@ -153,7 +160,8 @@ Application configuration is managed via environment variables and the `app/conf
 * `DevelopmentConfig`: Inherits from `Config`, sets `DEBUG = True`.
 * `ProductionConfig`: Inherits from `Config`, sets `DEBUG = False`.
 
-The active configuration is selected based on the `APP_ENV` environment variable (`dev` or `prod`). Critical settings (`PREDICTION_API_KEY`, `DB_USER`, `DB_PASSWORD`) are validated at startup when `APP_ENV=prod`.
+The active configuration is selected based on the `APP_ENV` environment variable (`dev` or `prod`). Critical settings (
+`PREDICTION_API_KEY`, `DB_USER`, `DB_PASSWORD`) are validated at startup when `APP_ENV=prod`.
 
 ## Project Structure
 
@@ -182,19 +190,23 @@ The active configuration is selected based on the `APP_ENV` environment variable
 
 ## Data Source and License Notice
 
-**Important:** The historical ATP tour data used to train the machine learning model in this project originates from Jeff Sackmann's `tennis_atp` repository:
+**Important:** The historical ATP tour data used to train the machine learning model in this project originates from
+Jeff Sackmann's `tennis_atp` repository:
 
 * **Repository:** [https://github.com/JeffSackmann/tennis_atp](https://github.com/JeffSackmann/tennis_atp)
 * **Author:** Jeff Sackmann / Tennis Abstract
-* **License:** [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+* **License:
+  ** [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 **Usage Restrictions:** In accordance with the CC BY-NC-SA 4.0 license:
 
 1. **Attribution is required:** Credit must be given to Jeff Sackmann / Tennis Abstract.
-2. **Non-Commercial Use Only:** The underlying data from this source **cannot** be used for commercial purposes. Any use of this API or its derivatives must comply with this restriction regarding the data.
+2. **Non-Commercial Use Only:** The underlying data from this source **cannot** be used for commercial purposes. Any use
+   of this API or its derivatives must comply with this restriction regarding the data.
 3. **ShareAlike:** If you adapt or build upon the data, you must distribute your contributions under the same license.
 
-Please ensure your use of this API respects these license terms, particularly the non-commercial restriction tied to the dataset.
+Please ensure your use of this API respects these license terms, particularly the non-commercial restriction tied to the
+dataset.
 
 ## License
 

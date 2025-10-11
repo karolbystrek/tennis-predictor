@@ -18,13 +18,22 @@ def post_prediction_request():
     data = request.get_json()
     logger.info(f"Received prediction request: {data}")
 
-    required_keys = ['best_of', 'surface', 'tourney_level', 'round', 'player1_id', 'player2_id']
+    required_keys = ['bestOf', 'surface', 'tourneyLevel', 'round', 'player1Id', 'player2Id']
     if not all(key in data for key in required_keys):
         logger.warning(f"Prediction request failed: Missing required keys. Received: {data.keys()}")
         return jsonify({"error": f"Missing required keys: {required_keys}"}), 400
 
+    converted_data = {
+        'best_of': data['bestOf'],
+        'surface': data['surface'],
+        'tourney_level': data['tourneyLevel'],
+        'round': data['round'],
+        'player1_id': data['player1Id'],
+        'player2_id': data['player2Id']
+    }
+
     try:
-        prediction = prediction_service.generate_match_prediction(data)
+        prediction = prediction_service.generate_match_prediction(converted_data)
         return jsonify(prediction), 200
 
     except ValueError as e:

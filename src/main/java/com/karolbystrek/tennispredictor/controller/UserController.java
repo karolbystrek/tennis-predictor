@@ -24,7 +24,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/{username}")
+    @GetMapping(value = "/{username}", produces = "application/json")
     public ResponseEntity<UserResponse> getUser(@PathVariable String username) throws UserNotFoundException {
         log.info("Received request to get user with username: {}", username);
         User user = userService.getUserBy(username);

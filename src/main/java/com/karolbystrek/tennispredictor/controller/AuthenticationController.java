@@ -29,14 +29,14 @@ public class AuthenticationController {
     private final AuthenticationService authService;
 
 
-    @PostMapping("/signup")
+    @PostMapping(value = "/signup", consumes = "application/json", produces = "application/json")
     public ResponseEntity<UserResponse> signup(@Valid @RequestBody SignupRequest request) {
         log.info("Received signup request: {}", request);
         User registeredUser = authService.registerUser(request);
         return ResponseEntity.ok(UserResponse.createFor(registeredUser));
     }
 
-    @PostMapping("/login")
+    @PostMapping(value = "/login", consumes = "application/json", produces = "application/json")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) throws UserNotFoundException {
         log.info("Received login request for user: {}", request.username());
         User authenticatedUser = authService.authenticate(request);
