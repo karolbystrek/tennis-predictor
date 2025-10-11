@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static io.netty.handler.codec.http.HttpHeaders.Values.APPLICATION_JSON;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -29,14 +31,14 @@ public class AuthenticationController {
     private final AuthenticationService authService;
 
 
-    @PostMapping(value = "/signup", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/signup", consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
     public ResponseEntity<UserResponse> signup(@Valid @RequestBody SignupRequest request) {
         log.info("Received signup request: {}", request);
         User registeredUser = authService.registerUser(request);
         return ResponseEntity.ok(UserResponse.createFor(registeredUser));
     }
 
-    @PostMapping(value = "/login", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/login", consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) throws UserNotFoundException {
         log.info("Received login request for user: {}", request.username());
         User authenticatedUser = authService.authenticate(request);

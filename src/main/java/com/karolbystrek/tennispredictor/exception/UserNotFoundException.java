@@ -3,12 +3,12 @@ package com.karolbystrek.tennispredictor.exception;
 import lombok.Getter;
 
 @Getter
-public class UserNotFoundException extends Exception {
+public class UserNotFoundException extends RuntimeException {
 
-    private final String userEmail;
+    private final String username;
 
     public UserNotFoundException(String message, String username) {
         super(message);
-        this.userEmail = username;
+        this.username = username;
     }
 }

@@ -13,7 +13,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ProblemDetail handleUserNotFoundException(UserNotFoundException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(NOT_FOUND, ex.getMessage());
-        problemDetail.setProperty("description", "The requested user was not found in the system.");
+        problemDetail.setProperty("description", "The user with username " + ex.getUsername() + " was not found in the system.");
+        return problemDetail;
+    }
+
+    @ExceptionHandler(PlayerNotFoundException.class)
+    public ProblemDetail handlePlayerNotFoundException(PlayerNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(NOT_FOUND, ex.getMessage());
+        problemDetail.setProperty("description", "The player with id " + ex.getPlayerId() + " was not found in the system.");
         return problemDetail;
     }
 }

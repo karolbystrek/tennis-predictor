@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static io.netty.handler.codec.http.HttpHeaders.Values.APPLICATION_JSON;
+
 @RestController
 @RequestMapping("/api/predictions")
 @RequiredArgsConstructor
@@ -18,7 +20,7 @@ public class PredictionController {
 
     private final PredictionService predictionService;
 
-    @PostMapping(consumes = "application/json", produces = "application/json")
+    @PostMapping(consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
     public ResponseEntity<PredictionResponse> makePrediction(@Valid @RequestBody PredictionRequest request) {
         var response = predictionService.makePredictionFor(request);
         return ResponseEntity.ok(response);
