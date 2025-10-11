@@ -22,6 +22,11 @@ public class PlayerService {
         return playerRepository.findAll();
     }
 
+    public Player getPlayerById(Long playerId) {
+        return playerRepository.findById(playerId)
+                .orElseThrow(() -> new PlayerNotFoundException("Player not found with ID: " + playerId, playerId));
+    }
+
     @Transactional
     public Player createPlayer(PlayerRequest request) {
         Player player = Player.createFrom(request);
