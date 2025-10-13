@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.karolbystrek.tennispredictor.dto.UserResponse.createFor;
+import static com.karolbystrek.tennispredictor.dto.UserResponse.createUserResponseFor;
 import static io.netty.handler.codec.http.HttpHeaders.Values.APPLICATION_JSON;
 
 @RestController
@@ -28,6 +28,6 @@ public class UserController {
     public ResponseEntity<UserResponse> getUser(@PathVariable String username) {
         log.info("Received request to get user with username: {}", username);
         User user = userService.getUserBy(username);
-        return ResponseEntity.ok(createFor(user));
+        return ResponseEntity.ok(createUserResponseFor(user));
     }
 }

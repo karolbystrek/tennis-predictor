@@ -1,5 +1,6 @@
 package com.karolbystrek.tennispredictor.service;
 
+import com.karolbystrek.tennispredictor.model.JwtToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -33,16 +34,13 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    public JwtToken generateToken(UserDetails userDetails) {
+        String value = generateTokenValue(new HashMap<>(), userDetails);
+        return new JwtToken(value, jwtExpiration);
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    private String generateTokenValue(Map<String, Object> extraClaims, UserDetails userDetails) {
         return buildToken(extraClaims, userDetails, jwtExpiration);
-    }
-
-    public long getExpirationTime() {
-        return jwtExpiration;
     }
 
     private String buildToken(

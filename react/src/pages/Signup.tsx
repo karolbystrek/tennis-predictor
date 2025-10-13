@@ -1,8 +1,17 @@
 import { useAuthenticationContext } from "../contexts/AuthenticationContextProvider.tsx";
 import { Navigate, useNavigate } from "react-router-dom";
-import { authenticationService, type SignupRequest } from "../services/authenticationService.ts";
+import { authenticationService } from "../services/authenticationService.ts";
 import { type FormEvent, useState } from "react";
-import { Alert, Box, Button, Container, Link, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Container,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
+import type { SignupRequest } from "../utils/types.ts";
 
 const Signup = () => {
   const { isAuthenticated } = useAuthenticationContext();

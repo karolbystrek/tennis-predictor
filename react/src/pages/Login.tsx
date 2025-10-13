@@ -1,8 +1,5 @@
 import { Navigate, useNavigate } from "react-router-dom";
-import {
-  authenticationService,
-  type LoginRequest,
-} from "../services/authenticationService.ts";
+import { authenticationService } from "../services/authenticationService.ts";
 import { type FormEvent, useState } from "react";
 import {
   Alert,
@@ -14,6 +11,8 @@ import {
   Typography,
 } from "@mui/material";
 import { useAuthenticationContext } from "../contexts/AuthenticationContextProvider.tsx";
+import type { LoginRequest } from "../utils/types.ts";
+import { useApplicationContext } from "../contexts/ApplicationContextProvider.tsx";
 
 export const Login = () => {
   const [credentials, setCredentials] = useState<LoginRequest>({
@@ -21,6 +20,7 @@ export const Login = () => {
     password: "",
   });
   const { saveAuthentication, isAuthenticated } = useAuthenticationContext();
+  const { setUser } = useApplicationContext();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -40,7 +40,8 @@ export const Login = () => {
     setLoading(true);
     try {
       const response = await authenticationService.login(credentials);
-      saveAuthentication(response);
+      saveAuthentication(response.jwtToken);
+      setUser(response.user);
       navigate("/");
     } catch (err) {
       setError("Invalid username or password");

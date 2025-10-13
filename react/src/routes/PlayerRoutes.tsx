@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
-import { AddPlayer } from "./AddPlayer.tsx";
-import { DeletePlayer } from "./DeletePlayer.tsx";
-import { UpdatePlayer } from "./UpdatePlayer.tsx";
-import { Players } from "./Players.tsx";
+import { Players } from "../pages/players/Players.tsx";
+import { AddPlayer } from "../pages/players/AddPlayer.tsx";
+import { DeletePlayer } from "../pages/players/DeletePlayer.tsx";
+import { UpdatePlayer } from "../pages/players/UpdatePlayer.tsx";
 
 export const PlayerRoutes = () => {
   return (

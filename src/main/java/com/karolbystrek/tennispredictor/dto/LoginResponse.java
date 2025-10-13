@@ -1,16 +1,20 @@
 package com.karolbystrek.tennispredictor.dto;
 
+import com.karolbystrek.tennispredictor.model.JwtToken;
+import com.karolbystrek.tennispredictor.model.User;
 import lombok.Builder;
+
+import static com.karolbystrek.tennispredictor.dto.UserResponse.createUserResponseFor;
 
 @Builder
 public record LoginResponse(
-        String token,
-        Long expiresIn
+        UserResponse user,
+        JwtToken jwtToken
 ) {
-    public static LoginResponse createFor(String token, Long expiresIn) {
+    public static LoginResponse createLoginResponseFor(User user, JwtToken token) {
         return LoginResponse.builder()
-                .token(token)
-                .expiresIn(expiresIn)
+                .user(createUserResponseFor(user))
+                .jwtToken(token)
                 .build();
     }
 }

@@ -1,20 +1,24 @@
 import { createContext, type ReactNode, useContext } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import type { LoginResponse } from "../services/authenticationService.ts";
+import type { JwtToken } from "../utils/types.ts";
 
 type AuthenticationContextType = {
+  getTokenValue: () => string | null;
   isAuthenticated: boolean;
-  saveAuthentication: (loginResponse: LoginResponse) => void;
+  saveAuthentication: (jwtToken: JwtToken) => void;
   clearAuthentication: () => void;
-  getToken: () => string | null;
 };
 
 const AuthenticationContext = createContext<
   AuthenticationContextType | undefined
 >(undefined);
 
-const TOKEN_KEY = "authToken";
-const TOKEN_EXPIRY_KEY = "authTokenExpiry";
+export type AuthenticationToken = {
+  value: string;
+  expiryTime: number;
+};
+
+const AUTHENTICATION_TOKEN_KEY = "authenticationToken";
 
 type AuthenticationContextProviderProps = {
   children: ReactNode;
@@ -23,36 +27,35 @@ type AuthenticationContextProviderProps = {
 export const AuthenticationContextProvider = ({
   children,
 }: AuthenticationContextProviderProps) => {
-  const [token, setToken] = useLocalStorage<string | null>(TOKEN_KEY, null);
-  const [tokenExpiry, setTokenExpiry] = useLocalStorage<number | null>(
-    TOKEN_EXPIRY_KEY,
+  const [token, setToken] = useLocalStorage<AuthenticationToken | null>(
+    AUTHENTICATION_TOKEN_KEY,
     null,
   );
-  const isAuthenticated =
-    token !== null && tokenExpiry !== null && Date.now() < tokenExpiry;
+  const isAuthenticated = token != null && Date.now() < token.expiryTime;
 
-  const getToken = () => {
+  const getTokenValue = () => {
     if (isAuthenticated) {
-      return token;
+      return token.value;
     }
     return null;
   };
 
-  const saveAuthentication = ({ token, expiresIn }: LoginResponse) => {
-    const expiryTime = Date.now() + expiresIn * 1000;
-    setToken(token);
-    setTokenExpiry(expiryTime);
+  const saveAuthentication = (jwtToken: JwtToken) => {
+    const expiryTime = Date.now() + jwtToken.expiresIn * 1000;
+    setToken({
+      value: jwtToken.value,
+      expiryTime,
+    });
   };
 
   const clearAuthentication = () => {
     setToken(null);
-    setTokenExpiry(null);
   };
 
   return (
     <AuthenticationContext.Provider
       value={{
-        getToken,
+        getTokenValue,
         isAuthenticated,
         saveAuthentication,
         clearAuthentication,
