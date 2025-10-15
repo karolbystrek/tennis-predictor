@@ -12,6 +12,7 @@ export const playerService = {
     playerId,
     tokenValue,
   }: PlayerRequest): Promise<PlayerResponse> => {
+    console.log(`Fetching player with ID: ${playerId}`);
     const response = await fetch(
       `${API_BASE_URL}${API_PLAYERS_ENDPOINT}/${playerId}`,
       {
@@ -30,6 +31,7 @@ export const playerService = {
   getAllPlayers: async ({
     tokenValue,
   }: PlayersRequest): Promise<PlayersResponse> => {
+    console.log("Fetching all players");
     const response = await fetch(`${API_BASE_URL}${API_PLAYERS_ENDPOINT}`, {
       method: "GET",
       headers: {
@@ -48,6 +50,7 @@ export const playerService = {
     player,
     tokenValue,
   }: AddPlayerRequest): Promise<void> => {
+    console.log("Adding player:", player);
     const response = await fetch(`${API_BASE_URL}${API_PLAYERS_ENDPOINT}`, {
       method: "POST",
       headers: {
@@ -65,6 +68,7 @@ export const playerService = {
     player,
     tokenValue,
   }: UpdatePlayerRequest): Promise<void> => {
+    console.log("Updating player:", player);
     const response = await fetch(
       `${API_BASE_URL}${API_PLAYERS_ENDPOINT}/${player.id}`,
       {

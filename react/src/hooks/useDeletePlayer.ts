@@ -7,23 +7,16 @@ export type DeletePlayerRequest = {
   tokenValue: string;
 };
 
-type UseDeletePlayerProps = {
-  playerId: number;
-};
-
-export const useDeletePlayer = ({ playerId }: UseDeletePlayerProps) => {
+export const useDeletePlayer = () => {
   const { getTokenValue } = useAuthenticationContext();
   const tokenValue = getTokenValue();
 
   return useMutation<void, Error, DeletePlayerRequest>({
-    mutationKey: ["deletePlayer", playerId],
-    mutationFn: () =>
-      playerService.deletePlayer({ playerId, tokenValue: tokenValue! }),
-    onSuccess: () => {
-      console.log(`Player ${playerId} deleted successfully.`);
-    },
-    onError: (error) => {
-      console.error("Failed to delete player:", error.message);
-    },
+    mutationKey: ["deletePlayer"],
+    mutationFn: (request: DeletePlayerRequest) =>
+      playerService.deletePlayer({
+        playerId: request.playerId,
+        tokenValue: request.tokenValue || tokenValue!,
+      }),
   });
 };

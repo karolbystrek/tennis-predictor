@@ -47,7 +47,7 @@ public class Player {
     @Column(name = "age", nullable = false)
     private Integer age;
 
-    @Column(name = "rank")
+    @Column(name = "`rank`")
     private Integer rank;
 
     @Column(name = "rank_points")

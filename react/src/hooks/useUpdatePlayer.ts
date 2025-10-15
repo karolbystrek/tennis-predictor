@@ -8,23 +8,16 @@ export type UpdatePlayerRequest = {
   tokenValue: string;
 };
 
-type UseUpdatePlayerProps = {
-  player: Player;
-};
-
-export const useUpdatePlayer = ({ player }: UseUpdatePlayerProps) => {
+export const useUpdatePlayer = () => {
   const { getTokenValue } = useAuthenticationContext();
   const tokenValue = getTokenValue();
 
   return useMutation<void, Error, UpdatePlayerRequest>({
-    mutationKey: ["UpdatePlayer", player],
-    mutationFn: () =>
-      playerService.updatePlayer({ player, tokenValue: tokenValue! }),
-    onSuccess: () => {
-      console.log("Player updated successfully");
-    },
-    onError: (error) => {
-      console.error("Failed to update player:", error.message);
-    },
+    mutationKey: ["updatePlayer"],
+    mutationFn: (request: UpdatePlayerRequest) =>
+      playerService.updatePlayer({
+        player: request.player,
+        tokenValue: request.tokenValue || tokenValue!,
+      }),
   });
 };

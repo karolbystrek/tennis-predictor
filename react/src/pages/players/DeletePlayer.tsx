@@ -33,9 +33,7 @@ export const DeletePlayer = () => {
     playerId: Number(playerId),
   });
 
-  const { mutate: deletePlayer, isPending: isDeleting } = useDeletePlayer({
-    playerId: Number(playerId),
-  });
+  const { mutate: deletePlayer, isPending: isDeleting } = useDeletePlayer();
 
   const handleDeleteClick = () => {
     setOpenDialog(true);
