@@ -1,6 +1,5 @@
 import { useAuthenticationContext } from "../contexts/AuthenticationContextProvider.tsx";
-import { Navigate, useNavigate } from "react-router-dom";
-import { authenticationService } from "../services/authenticationService.ts";
+import { Navigate } from "react-router-dom";
 import { type FormEvent, useState } from "react";
 import {
   Alert,
@@ -11,43 +10,29 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import type { SignupRequest } from "../utils/types.ts";
+import { type SignupRequest, useSignup } from "../hooks/useSignup.ts";
 
 const Signup = () => {
   const { isAuthenticated } = useAuthenticationContext();
-  const navigate = useNavigate();
   const [credentials, setCredentials] = useState<SignupRequest>({
     username: "",
     email: "",
     password: "",
   });
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const { mutate: signup, isPending, error } = useSignup();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(null);
 
-    if (!credentials.username.trim()) {
-      setError("Username is required");
-      return;
-    } else if (!credentials.email.trim()) {
-      setError("Email is required");
-      return;
-    } else if (!credentials.password.trim()) {
-      setError("Password is required");
+    if (
+      !credentials.username.trim() ||
+      !credentials.email.trim() ||
+      !credentials.password.trim()
+    ) {
       return;
     }
 
-    setLoading(true);
-    try {
-      await authenticationService.signup(credentials);
-      navigate("/login");
-    } catch (err) {
-      setError("Signup failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    signup(credentials);
   };
 
   return isAuthenticated ? (
@@ -68,10 +53,11 @@ const Signup = () => {
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
+              {error.message}
             </Alert>
           )}
           <TextField
+            required
             margin="normal"
             fullWidth
             id="username"
@@ -84,6 +70,7 @@ const Signup = () => {
             }
           />
           <TextField
+            required
             margin="normal"
             fullWidth
             id="email"
@@ -96,6 +83,7 @@ const Signup = () => {
             }
           />
           <TextField
+            required
             margin="normal"
             fullWidth
             name="password"
@@ -112,9 +100,9 @@ const Signup = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            disabled={loading}
+            disabled={isPending}
           >
-            {loading ? "Signing up..." : "Sign Up"}
+            {isPending ? "Signing up..." : "Sign Up"}
           </Button>
           <Box sx={{ textAlign: "center" }}>
             <Link href="/login" variant="body2">

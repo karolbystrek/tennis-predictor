@@ -9,23 +9,25 @@ export type User = {
   updatedAt: Date;
 };
 
+export type Player = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  hand: string;
+  dateOfBirth: Date;
+  ioc: string;
+  height: number;
+  age: number;
+  rank: number;
+  rankPoints: number;
+  elo: number;
+  eloHard: number;
+  eloGrass: number;
+  eloCarpet: number;
+  eloClay: number;
+};
+
 export type JwtToken = {
   value: string;
   expiresIn: number;
-};
-
-export type LoginRequest = {
-  username: string;
-  password: string;
-};
-
-export type SignupRequest = {
-  username: string;
-  email: string;
-  password: string;
-};
-
-export type LoginResponse = {
-  jwtToken: JwtToken;
-  user: User;
 };

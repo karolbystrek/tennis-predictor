@@ -1,5 +1,4 @@
-import { Navigate, useNavigate } from "react-router-dom";
-import { authenticationService } from "../services/authenticationService.ts";
+import { Navigate } from "react-router-dom";
 import { type FormEvent, useState } from "react";
 import {
   Alert,
@@ -11,48 +10,39 @@ import {
   Typography,
 } from "@mui/material";
 import { useAuthenticationContext } from "../contexts/AuthenticationContextProvider.tsx";
-import type { LoginRequest } from "../utils/types.ts";
-import { useApplicationContext } from "../contexts/ApplicationContextProvider.tsx";
+import { type LoginRequest, useLogin } from "../hooks/useLogin.ts";
 
 export const Login = () => {
   const [credentials, setCredentials] = useState<LoginRequest>({
     username: "",
     password: "",
   });
-  const { saveAuthentication, isAuthenticated } = useAuthenticationContext();
-  const { setUser } = useApplicationContext();
-  const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const { isAuthenticated } = useAuthenticationContext();
+  const { mutate: login, isPending, error } = useLogin();
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(null);
 
-    if (!credentials.username.trim()) {
-      setError("Username is required");
-      return;
-    } else if (!credentials.password.trim()) {
-      setError("Password is required");
+    if (!credentials.username.trim() || !credentials.password.trim()) {
       return;
     }
 
-    setLoading(true);
-    try {
-      const response = await authenticationService.login(credentials);
-      saveAuthentication(response.jwtToken);
-      setUser(response.user);
-      navigate("/");
-    } catch (err) {
-      setError("Invalid username or password");
-    } finally {
-      setLoading(false);
-    }
+    login(credentials);
   };
 
-  return isAuthenticated ? (
-    <Navigate to={"/"} />
-  ) : (
+  const handleUsernameChange = (value: string) => {
+    setCredentials((prev) => ({ ...prev, username: value }));
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setCredentials((prev) => ({ ...prev, password: value }));
+  };
+
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+
+  return (
     <Container maxWidth="xs">
       <Box
         sx={{
@@ -68,10 +58,11 @@ export const Login = () => {
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
+              {error.message}
             </Alert>
           )}
           <TextField
+            required
             margin="normal"
             fullWidth
             id="username"
@@ -79,11 +70,11 @@ export const Login = () => {
             name="username"
             autoFocus
             value={credentials.username}
-            onChange={(e) =>
-              setCredentials({ ...credentials, username: e.target.value })
-            }
+            onChange={(e) => handleUsernameChange(e.target.value)}
+            disabled={isPending}
           />
           <TextField
+            required
             margin="normal"
             fullWidth
             name="password"
@@ -91,18 +82,17 @@ export const Login = () => {
             type="password"
             id="password"
             value={credentials.password}
-            onChange={(e) =>
-              setCredentials({ ...credentials, password: e.target.value })
-            }
+            onChange={(e) => handlePasswordChange(e.target.value)}
+            disabled={isPending}
           />
           <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            disabled={loading}
+            disabled={isPending}
           >
-            {loading ? "Signing in..." : "Sign In"}
+            {isPending ? "Signing in..." : "Sign In"}
           </Button>
           <Box sx={{ textAlign: "center" }}>
             <Link href="/signup" variant="body2">
