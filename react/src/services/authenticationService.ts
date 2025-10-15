@@ -1,5 +1,5 @@
 import type { LoginRequest, LoginResponse } from "../hooks/useLogin.ts";
-import type { SignupRequest, SignupResponse } from "../hooks/useSignup.ts";
+import type { SignupRequest } from "../hooks/useSignup.ts";
 
 export const API_BASE_URL = "http://localhost:8080";
 const API_LOGIN_ENDPOINT = "/auth/login";
@@ -22,7 +22,7 @@ export const authenticationService = {
     return response.json();
   },
 
-  signup: async (credentials: SignupRequest): Promise<SignupResponse> => {
+  signup: async (credentials: SignupRequest): Promise<void> => {
     const response = await fetch(`${API_BASE_URL}${API_SIGNUP_ENDPOINT}`, {
       method: "POST",
       headers: {

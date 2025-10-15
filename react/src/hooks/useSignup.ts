@@ -8,12 +8,10 @@ export type SignupRequest = {
   password: string;
 };
 
-export type SignupResponse = {};
-
 export const useSignup = () => {
   const navigate = useNavigate();
 
-  return useMutation<SignupResponse, Error, SignupRequest>({
+  return useMutation<void, Error, SignupRequest>({
     mutationKey: ["signup"],
     mutationFn: authenticationService.signup,
     onSuccess: () => {

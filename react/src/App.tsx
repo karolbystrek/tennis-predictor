@@ -28,8 +28,8 @@ function App() {
             <Route path={"/predictions"} element={<Prediction />} />
             <Route path={"/players/*"} element={<PlayerRoutes />} />
             <Route path={"/account"} element={<Account />} />
-            <Route path={"*"} element={<NotFound />} />
           </Route>
+          <Route path={"*"} element={<NotFound />} />
         </Routes>
       </AuthenticationContextProvider>
     </ApplicationContextProvider>
