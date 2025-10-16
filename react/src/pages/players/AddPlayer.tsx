@@ -27,6 +27,7 @@ export const AddPlayer = () => {
     }
     const playerData = preparePlayerData();
     addPlayer({ player: playerData, tokenValue: "" });
+    navigate("/players");
   };
 
   const handleCancel = () => {

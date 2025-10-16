@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { playerService } from "../services/playerService.ts";
 
 export type UpdatePlayerRequest = {
-  player: Player;
+  player: Omit<Player, "id" | "rank" | "age" | "rankPoints">;
   tokenValue: string;
 };
 

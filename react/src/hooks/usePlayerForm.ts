@@ -41,6 +41,10 @@ export const usePlayerForm = (initialData?: Partial<PlayerFormData>) => {
     setErrorMessage("");
   };
 
+  const updateFormData = (newData: Partial<PlayerFormData>) => {
+    setFormData((prev) => ({ ...prev, ...newData }));
+  };
+
   const validateForm = (): boolean => {
     if (!formData.firstName.trim() || !formData.lastName.trim()) {
       setErrorMessage("First name and last name are required");
@@ -89,5 +93,6 @@ export const usePlayerForm = (initialData?: Partial<PlayerFormData>) => {
     preparePlayerData,
     resetForm,
     setErrorMessage,
+    updateFormData,
   };
 };
