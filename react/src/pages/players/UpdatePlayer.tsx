@@ -56,9 +56,6 @@ export const UpdatePlayer = () => {
       {
         player: {
           id: Number(playerId),
-          rank: player?.rank || 0,
-          rankPoints: player?.rankPoints || 0,
-          age: player?.age || 0,
           ...playerData,
         },
         tokenValue: "",
