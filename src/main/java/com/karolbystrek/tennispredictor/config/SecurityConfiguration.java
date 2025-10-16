@@ -16,6 +16,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static java.util.Arrays.stream;
+import static org.springframework.http.HttpMethod.*;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -36,6 +37,11 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(GET, "/api/players/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(POST, "/api/players").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(PUT, "/api/players/**").hasRole("ADMIN")
+                        .requestMatchers(DELETE, "/api/players/**").hasRole("ADMIN")
+                        .requestMatchers(POST, "/api/predictions").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))

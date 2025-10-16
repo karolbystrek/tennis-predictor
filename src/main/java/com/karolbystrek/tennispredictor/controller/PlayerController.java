@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,12 +26,14 @@ public class PlayerController {
     private final PlayerService playerService;
 
     @GetMapping(produces = APPLICATION_JSON)
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<List<Player>> getAllPlayers() {
         log.info("Fetching all players");
         return ResponseEntity.ok(playerService.getAllPlayers());
     }
 
     @GetMapping(value = "/{playerId}", produces = APPLICATION_JSON)
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Player> getPlayerById(@PathVariable Long playerId) {
         log.info("Fetching player with ID: {}", playerId);
         var Player = playerService.getPlayerById(playerId);
@@ -38,6 +41,7 @@ public class PlayerController {
     }
 
     @PostMapping(consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Player> createPlayer(@Valid @RequestBody PlayerRequest request) {
         log.info("Creating player for request: {}", request);
         final var newPlayer = playerService.createPlayer(request);
@@ -45,6 +49,7 @@ public class PlayerController {
     }
 
     @PutMapping(value = "/{playerId}", consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Player> updatePlayer(@PathVariable Long playerId, @Valid @RequestBody PlayerRequest request) {
         log.info("Updating player with ID: {} for request: {}", playerId, request);
         final var updatedPlayer = playerService.updatePlayer(playerId, request);
@@ -52,6 +57,7 @@ public class PlayerController {
     }
 
     @DeleteMapping(value = "/{playerId}", produces = APPLICATION_JSON)
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deletePlayer(@PathVariable Long playerId) {
         log.info("Deleting player with ID: {}", playerId);
         playerService.deletePlayer(playerId);
