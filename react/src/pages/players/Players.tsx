@@ -1,32 +1,30 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   Alert,
-  Autocomplete,
   Box,
   Button,
-  Chip,
   CircularProgress,
   Container,
   Stack,
-  TextField,
-  Typography
+  Typography,
 } from "@mui/material";
-import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
+import {
+  Add as AddIcon,
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+} from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { usePlayers } from "../../hooks/usePlayers.ts";
 import { PlayerInfo } from "../../components/players/PlayerInfo.tsx";
-import type { Player } from "../../utils/types.ts";
 import { useRole } from "../../hooks/useRole.ts";
+import { PlayerSearchField } from "../../components/players/PlayerSearchField.tsx";
 
 export const Players = () => {
   const { data: players, isLoading, error } = usePlayers();
-  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+  const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
   const { isAdmin } = useRole();
 
-  const sortedPlayers = useMemo(() => {
-    if (!players) return [];
-    return [...players].sort((a, b) => b.elo - a.elo);
-  }, [players]);
+  const selectedPlayer = players?.find((p) => p.id === selectedPlayerId);
 
   if (isLoading) {
     return (
@@ -80,81 +78,30 @@ export const Players = () => {
           </Button>
         </Box>
 
-        <Autocomplete
-          options={sortedPlayers}
-          getOptionLabel={(option) =>
-            `${option.firstName} ${option.lastName} (ELO: ${option.elo.toFixed(0)})`
-          }
-          renderOption={(props, option) => (
-            <li {...props} key={option.id}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  width: "100%",
-                }}
-              >
-                <Typography>
-                  {option.firstName} {option.lastName}
-                </Typography>
-                <Chip
-                  label={`ELO: ${option.elo.toFixed(0)}`}
-                  size="small"
-                  color="primary"
-                />
-              </Box>
-            </li>
-          )}
-          value={selectedPlayer}
-          onChange={(_, newValue) => setSelectedPlayer(newValue)}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Search and select player"
-              placeholder="Start typing to search..."
-              variant="outlined"
-            />
-          )}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          filterOptions={(options, state) => {
-            const query = state.inputValue.toLowerCase().trim();
-            if (!query) return options.slice(0, 10);
-
-            return options
-              .filter(
-                (player) =>
-                  player.firstName.toLowerCase().includes(query) ||
-                  player.lastName.toLowerCase().includes(query) ||
-                  `${player.firstName} ${player.lastName}`
-                    .toLowerCase()
-                    .includes(query) ||
-                  player.ioc.toLowerCase().includes(query),
-              )
-              .slice(0, 10);
-          }}
-          noOptionsText="No players found"
-          sx={{ mb: 3 }}
+        <PlayerSearchField
+          label="Search and select player"
+          value={selectedPlayerId}
+          onChange={setSelectedPlayerId}
         />
 
         {isAdmin() && (
-          <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
+          <Stack direction="row" spacing={2} sx={{ my: 3 }}>
             <Button
               component={Link}
-              to={`/players/update/${selectedPlayer?.id}`}
+              to={`/players/update/${selectedPlayerId}`}
               variant="outlined"
               startIcon={<EditIcon />}
-              disabled={!selectedPlayer}
+              disabled={!selectedPlayerId}
             >
               Update Player
             </Button>
             <Button
               component={Link}
-              to={`/players/delete/${selectedPlayer?.id}`}
+              to={`/players/delete/${selectedPlayerId}`}
               variant="outlined"
               color="error"
               startIcon={<DeleteIcon />}
-              disabled={!selectedPlayer}
+              disabled={!selectedPlayerId}
             >
               Delete Player
             </Button>
