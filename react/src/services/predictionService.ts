@@ -2,15 +2,13 @@ import type {
   PredictionRequest,
   PredictionResponse,
 } from "../hooks/useMakePrediction.ts";
-import { API_BASE_URL } from "./authenticationService.ts";
-
-const API_PREDICTION_ENDPOINT = "/api/predictions";
+import { ENDPOINTS } from "../config/api.ts";
 
 export const predictionService = {
   makePrediction: async (
     request: PredictionRequest,
   ): Promise<PredictionResponse> => {
-    const response = await fetch(`${API_BASE_URL}${API_PREDICTION_ENDPOINT}`, {
+    const response = await fetch(`${ENDPOINTS.PREDICT}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

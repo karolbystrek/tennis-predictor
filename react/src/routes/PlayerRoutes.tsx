@@ -14,7 +14,7 @@ export const PlayerRoutes = () => {
         <Route
           path={"add"}
           element={
-            <RoleGuard allowedRoles={["ADMIN"]}>
+            <RoleGuard allowedRoles={["ADMIN", "USER"]}>
               <AddPlayer />
             </RoleGuard>
           }

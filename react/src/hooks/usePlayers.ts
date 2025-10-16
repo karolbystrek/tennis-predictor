@@ -17,7 +17,5 @@ export const usePlayers = () => {
     queryKey: ["players"],
     queryFn: () => playerService.getAllPlayers({ tokenValue: tokenValue! }),
     enabled: !!tokenValue,
-    staleTime: 60 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
   });
 };

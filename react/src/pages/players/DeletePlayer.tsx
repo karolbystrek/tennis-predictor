@@ -16,7 +16,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Typography,
+  Typography
 } from "@mui/material";
 import { useState } from "react";
 
@@ -24,6 +24,7 @@ export const DeletePlayer = () => {
   const { playerId } = useParams();
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
+  const [deleted, setDeleted] = useState(false);
 
   const {
     data: player,
@@ -45,7 +46,7 @@ export const DeletePlayer = () => {
       {
         onSuccess: () => {
           setOpenDialog(false);
-          navigate("/players");
+          setDeleted(true);
         },
       },
     );
@@ -65,6 +66,28 @@ export const DeletePlayer = () => {
 
   if (!player) {
     return <PlayerNotFoundAlert />;
+  }
+
+  if (deleted) {
+    return (
+      <Container maxWidth="md" sx={{ mt: 4 }}>
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Player deleted
+          </Typography>
+        </Box>
+
+        <Alert severity="success" sx={{ mb: 3 }}>
+          {player.firstName} {player.lastName} has been deleted successfully.
+        </Alert>
+
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Button variant="contained" onClick={() => navigate("/players")}>
+            Back to players
+          </Button>
+        </Box>
+      </Container>
+    );
   }
 
   return (

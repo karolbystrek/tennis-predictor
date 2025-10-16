@@ -2,8 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { useAddPlayer } from "../../hooks/useAddPlayer.ts";
 import { usePlayerForm } from "../../hooks/usePlayerForm.ts";
 import { FormActions } from "../../components/players/FormActions.tsx";
-import { Alert, Box, Container, Typography } from "@mui/material";
+import { Alert, Box, Button, Container, Typography } from "@mui/material";
 import type { FormEvent } from "react";
+import { useState } from "react";
 import { PlayerForm } from "../../components/players/PlayerForm.tsx";
 
 export const AddPlayer = () => {
@@ -18,6 +19,7 @@ export const AddPlayer = () => {
   } = usePlayerForm();
 
   const { mutate: addPlayer, isPending } = useAddPlayer();
+  const [added, setAdded] = useState(false);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -26,13 +28,47 @@ export const AddPlayer = () => {
       return;
     }
     const playerData = preparePlayerData();
-    addPlayer({ player: playerData, tokenValue: "" });
-    navigate("/players");
+
+    // call mutate and react to success/failure instead of navigating immediately
+    addPlayer(
+      { player: playerData, tokenValue: "" },
+      {
+        onSuccess: () => {
+          setAdded(true);
+        },
+        onError: (err: any) => {
+          const message = err?.message ?? "Failed to add player";
+          setErrorMessage(message);
+        },
+      },
+    );
   };
 
   const handleCancel = () => {
     navigate("/players");
   };
+
+  if (added) {
+    return (
+      <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Player added
+          </Typography>
+        </Box>
+
+        <Alert severity="success" sx={{ mb: 3 }}>
+          The player was added successfully.
+        </Alert>
+
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Button variant="contained" onClick={() => navigate("/players")}>
+            Back to players
+          </Button>
+        </Box>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>

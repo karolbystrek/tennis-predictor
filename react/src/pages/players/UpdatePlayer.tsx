@@ -1,5 +1,5 @@
 import type { FormEvent } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { usePlayer } from "../../hooks/usePlayer.ts";
 import { useUpdatePlayer } from "../../hooks/useUpdatePlayer.ts";
@@ -9,7 +9,7 @@ import { FormActions } from "../../components/players/FormActions.tsx";
 import { PlayerError } from "../../components/players/PlayerError.tsx";
 import { PlayerNotFoundAlert } from "../../components/players/PlayerNotFoundAlert.tsx";
 import { playerToFormData } from "../../utils/playerUtils.ts";
-import { Alert, Box, Container, Typography } from "@mui/material";
+import { Alert, Box, Button, Container, Typography } from "@mui/material";
 import { Loading } from "../../components/Loading.tsx";
 
 export const UpdatePlayer = () => {
@@ -35,6 +35,7 @@ export const UpdatePlayer = () => {
   } = usePlayerForm();
 
   const { mutate: updatePlayer, isPending } = useUpdatePlayer();
+  const [updated, setUpdated] = useState(false);
 
   useEffect(() => {
     if (player) {
@@ -62,7 +63,8 @@ export const UpdatePlayer = () => {
       },
       {
         onSuccess: () => {
-          navigate("/players");
+          // show success state instead of navigating immediately
+          setUpdated(true);
         },
         onError: (error) => {
           setErrorMessage(error.message || "Failed to update player");
@@ -85,6 +87,28 @@ export const UpdatePlayer = () => {
 
   if (!player) {
     return <PlayerNotFoundAlert />;
+  }
+
+  if (updated) {
+    return (
+      <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Player updated
+          </Typography>
+        </Box>
+
+        <Alert severity="success" sx={{ mb: 3 }}>
+          The player was updated successfully.
+        </Alert>
+
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Button variant="contained" onClick={() => navigate("/players")}>
+            Back to players
+          </Button>
+        </Box>
+      </Container>
+    );
   }
 
   return (
